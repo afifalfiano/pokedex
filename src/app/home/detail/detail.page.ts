@@ -45,17 +45,18 @@ export class DetailPage implements OnInit, OnDestroy{
   }
 
   getPokemonDetail(): void {
-    this.isLoading.update(prev => !prev);
+    this.isLoading.set(true);
     this.pokemonService.getPokemonDetail(this.pokemonName).subscribe({
       next: data => {
+        this.isLoading.set(false);
         this.detail.set(data)
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading.update(prev => !prev);
+        this.isLoading.set(false);
       },
       complete: () => {
         setTimeout(() => {
-          this.isLoading.update(prev => !prev);
+          this.isLoading.set(false);
         }, 500);
       }
     });

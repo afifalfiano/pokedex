@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonTitle, IonList, IonItem, IonAvatar, IonLabel, IonButton, IonIcon, IonLoading } from '@ionic/angular/standalone';
+import { IonContent, IonTitle, IonList, IonItem, IonAvatar, IonLabel, IonButton, IonIcon, IonLoading, IonText } from '@ionic/angular/standalone';
 import { DataService } from '../core/services/data.service';
 import { environment } from 'src/environments/environment';
 import { COPY, Image } from '../common/constants';
@@ -17,7 +17,7 @@ import { PxIonToastComponent } from "../shared/components/px-ion-toast/px-ion-to
   templateUrl: './favorite.page.html',
   styleUrls: ['./favorite.page.scss'],
   standalone: true,
-  imports: [IonLoading, IonIcon, IonButton, IonLabel, RouterLink, IonAvatar, IonItem, IonList, IonContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
+  imports: [IonText, IonLoading, IonIcon, IonButton, IonLabel, RouterLink, IonAvatar, IonItem, IonList, IonContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
 })
 export class FavoritePage implements OnInit, OnDestroy {
   private readonly dataService = inject(DataService);
@@ -38,7 +38,7 @@ export class FavoritePage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.isLoading.update(prev => !prev);
+      this.isLoading.set(false);
     }, 500);
   }
 
