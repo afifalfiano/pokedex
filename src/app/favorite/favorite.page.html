@@ -5,24 +5,23 @@
 <ion-content [fullscreen]="true">
   <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   <app-px-ion-refresher [eventRefresh]="onPretendEvent.bind(this)"></app-px-ion-refresher>
-
     <ion-searchbar animated="true" placeholder="Search your favorite pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
   
     @if (!isLoading() && data().length > 0) {
-  <ion-list>
-      @for (pokemon of data() | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
-      <ion-item>
-        <ion-avatar slot="start">
-          <img [src]="urlImage + index + Image.png" alt="avatar" />
-        </ion-avatar>
-        <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
-        <ion-button [id]="triggerToast()" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)">
-          <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-        </ion-button>
-      </ion-item>
-      }
-  </ion-list>
-  }
+    <ion-list>
+        @for (pokemon of data() | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
+        <ion-item>
+          <ion-avatar slot="start">
+            <img [src]="urlImage + index + Image.png" alt="avatar" />
+          </ion-avatar>
+          <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
+          <ion-button [id]="triggerToast()" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)">
+            <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+        }
+    </ion-list>
+    }
 
   @if(!isLoading() && data().length === 0) {
     <ion-text color="white">

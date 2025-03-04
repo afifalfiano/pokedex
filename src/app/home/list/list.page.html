@@ -5,10 +5,24 @@
 <ion-content [fullscreen]="true">
   <app-px-ion-refresher [eventRefresh]="getPokemonList.bind(this)"></app-px-ion-refresher>
 
+  <ion-list>
+    <ion-item>
+      <ion-select 
+      label="Type Pokemon" 
+      interface="action-sheet" 
+      (ionChange)="handleChange($event)"
+      placeholder="Select Type Pokemon">
+      @for (type of types().results; track type) {
+        <ion-select-option [value]="type" >{{ type.name | titlecase}}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
   <ion-searchbar animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
 
   <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
-
+  
   @if (!isLoading() && total() > 0) {
   <ion-list>
     @for (pokemon of data().results | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {

@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonLoading, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonLabel, IonList, IonItem, IonAvatar, IonSelect, IonSelectOption, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonLoading, IonText } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { IParams, IPokemonList, IResponse } from '../../common/models/pokemon';
 import { map, Subject, takeUntil } from 'rxjs';
@@ -24,7 +24,7 @@ import { PxIonRefresherComponent } from "../../shared/components/px-ion-refreshe
   styleUrls: ['./list.page.scss'],
   standalone: true,
   providers: [SearchPipe],
-  imports: [IonText, SearchPipe, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonText, SearchPipe, IonSelect, IonSelectOption, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
@@ -36,7 +36,15 @@ export class ListPage implements OnInit, OnDestroy {
   isLoading = signal(true);
   triggerToast = signal('toast-info');
   keywordSearch = signal('');
-  data = signal<IResponse>(
+  typeSelected = signal<IPokemonList>({name: '', url: ''});
+  isAllType = computed(() => this.typeSelected().name === 'all');
+  types = signal<IResponse<any[]>>({
+    count: 0, 
+    next: '', 
+    previous: '', 
+    results: []
+  })
+  data = signal<IResponse<IPokemonList[]>>(
     {
       count: 0, 
       next: '', 
@@ -58,12 +66,38 @@ export class ListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getPokemonList();
+    this.getPokemonTypes();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  getPokemonTypes(): void {
+    this.isLoading.set(true);
+    this.pokemonService.getTypeOfPokemon().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: data => {
+        this.isLoading.set(false);
+        const all = {name: 'All', url: ''};
+        this.types.set({
+          ...data,
+          results: [all, ...data.results]
+        });
+        this.typeSelected.set(all);
+        this.getPokemonList();
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        setTimeout(() => {
+          this.isLoading.set(false);
+        }, 500);
+      }
+    })
   }
 
   getPokemonList(): void {
@@ -87,7 +121,11 @@ export class ListPage implements OnInit, OnDestroy {
       next: data => {
         this.isLoading.set(false);
         this.data.update(prev => {
-          const finalData = removeDuplicate([...prev.results, ...data.results], 'name')
+          let finalData = [];
+          if (this.params().offset > 0) {
+            finalData = removeDuplicate([...prev.results, ...data.results], 'name')
+          }
+          finalData = data.results;
           return {
             ...prev,
             previous: data.previous,
@@ -130,7 +168,7 @@ export class ListPage implements OnInit, OnDestroy {
 
   onAddFavorite(pokemon: IPokemonList): void {
     this.data.update(item => {
-      const idx = item.results.findIndex(item => item.name === pokemon.name);
+      const idx = item.results.findIndex((item: IPokemonList) => item.name === pokemon.name);
       if(idx > -1) {
         item.results[idx] = {
           ...item.results[idx],
@@ -145,7 +183,7 @@ export class ListPage implements OnInit, OnDestroy {
 
   onRemoveFavorite(pokemon: IPokemonList) {
     this.data.update(item => {
-      const idx = item.results.findIndex(item => item.name === pokemon.name);
+      const idx = item.results.findIndex((item: IPokemonList) => item.name === pokemon.name);
       if(idx > -1) {
         item.results[idx] = {
           ...item.results[idx],
@@ -156,5 +194,50 @@ export class ListPage implements OnInit, OnDestroy {
     })
     this.dataService.delete(pokemon);
     this.messageToast.set(COPY.REMOVE);
+  }
+
+
+  getIDetailTypePokemon(): void {
+    if (this.typeSelected().url.trim().length === 0) return;
+    this.isLoading.set(true);
+    this.pokemonService.getDetailTypeOfPokemon(this.typeSelected().url).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: data => {
+        this.isLoading.set(false);
+        const list = data.pokemon.map((item) => {
+          return {
+            name: item.pokemon.name,
+            url: item.pokemon.url,
+            isAddedFavorite: false
+          }
+        });
+        this.data.update(prev => {
+          return {
+            previous: null,
+            next: null,
+            count: list.length,
+            results: list
+          }
+        });
+      },error: (err) => {
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        setTimeout(() => {
+          this.isLoading.set(false);
+        }, 500);
+      },
+    })
+  }
+
+  handleChange(event: CustomEvent) {
+    const selected = event.detail.value;
+    this.typeSelected.set(selected);
+    if (this.typeSelected().url.trim().length === 0) {
+      this.getPokemonList();
+      return;
+    }
+    this.getIDetailTypePokemon();
   }
 }

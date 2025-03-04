@@ -11,11 +11,11 @@ export interface IPokemonList {
   [key: string]: any;
 }
 
-export interface IResponse {
+export interface IResponse<T> {
   count: number;
   next: string | null; 
   previous: string | null;
-  results: IPokemonList[]
+  results: T
 }
 
 export interface PokemonDetail {
