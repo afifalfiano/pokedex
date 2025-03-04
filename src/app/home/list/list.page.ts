@@ -15,13 +15,14 @@ import { removeDuplicate } from '../../utils';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { HttpErrorResponse } from '@angular/common/http';
+import { SearchPipe } from 'src/app/shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.page.html',
   styleUrls: ['./list.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent, IonRefresher, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
+  imports: [IonRefresherContent, SearchPipe, IonRefresher, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
@@ -32,6 +33,7 @@ export class ListPage implements OnInit, OnDestroy {
   durationToast = signal(3000);
   isLoading = signal(true);
   triggerToast = signal('toast-info');
+  keywordSearch = signal('');
   data = signal<IResponse>(
     {
       count: 0, 
@@ -117,19 +119,9 @@ export class ListPage implements OnInit, OnDestroy {
     }
   }
 
-  onSearch(event: any): any {
+  onSearch(event: any): void {
     const pokemon = event.detail.value;
-    if (pokemon.length === 0) {
-      this.getPokemonList();
-    } else {
-      this.data.update(prev => {
-        const findData = prev.results.filter(item => item.name.includes(pokemon.toLowerCase()))
-        return {
-          ...prev,
-          results: findData
-        }
-      });
-    }
+    this.keywordSearch.set(pokemon);
   }
 
   onAddFavorite(pokemon: IPokemonList): void {

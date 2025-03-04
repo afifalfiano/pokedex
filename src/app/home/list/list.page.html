@@ -7,13 +7,13 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-searchbar animated="true" placeholder="Search pokemon" (ionChange)="onSearch($event)"></ion-searchbar>
+  <ion-searchbar animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
 
   <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
 
   @if (!isLoading() && total() > 0) {
   <ion-list>
-    @for (pokemon of data().results; track $index; let index = $index) {
+    @for (pokemon of data().results | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
     <ion-item>
       <ion-avatar slot="start">
         <img [src]="urlImage + index + Image.png" alt="avatar" />

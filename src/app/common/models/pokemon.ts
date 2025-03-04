@@ -8,6 +8,7 @@ export interface IPokemonList {
   name: string;
   url: string;
   isAddedFavorite?: boolean;
+  [key: string]: any;
 }
 
 export interface IResponse {
