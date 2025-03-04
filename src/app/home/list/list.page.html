@@ -35,7 +35,7 @@
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   @if (total() > 0) {
-    <ion-toast trigger="toast-info" message="{{messageToast}}" [duration]="3000"></ion-toast>
+    <ion-toast trigger="toast-info" [message]="messageToast()" [duration]="3000"></ion-toast>
   }
 </ion-content>
 
