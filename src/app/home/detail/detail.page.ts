@@ -13,13 +13,14 @@ import { API } from 'src/app/common/internal-path';
 import { COPY } from 'src/app/common/constants';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
+import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonButton, IonLoading, IonText, RouterLink, IonCol, IonRow, IonGrid, IonContent, IonImg, IonTitle, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent]
+  imports: [IonIcon, IonButton, IonLoading, IonText, RouterLink, IonCol, IonRow, IonGrid, IonContent, IonImg, IonTitle, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)

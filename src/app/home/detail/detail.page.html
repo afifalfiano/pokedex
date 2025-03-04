@@ -2,10 +2,11 @@
   <ion-title [routerLink]="['/list']">Back</ion-title>
 </app-px-ion-header>
 
-
-<ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
-
 <ion-content [fullscreen]="true">
+  <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
+  
+  <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
+
   @if (detail() && !isLoading()) {
     <ion-text color="primary">
       <h1 style="text-align: center; margin-top: 12px;">{{pokemonName | titlecase}}</h1>

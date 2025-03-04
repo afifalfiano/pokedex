@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonLoading, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
+import { IonContent, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonLoading } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { IParams, IPokemonList, IResponse } from '../../common/models/pokemon';
 import { map, Subject, takeUntil } from 'rxjs';
@@ -16,13 +16,14 @@ import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-i
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { HttpErrorResponse } from '@angular/common/http';
 import { SearchPipe } from 'src/app/shared/pipes/search.pipe';
+import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.page.html',
   styleUrls: ['./list.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent, SearchPipe, IonRefresher, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
+  imports: [SearchPipe, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
@@ -152,11 +153,5 @@ export class ListPage implements OnInit, OnDestroy {
     })
     this.dataService.delete(pokemon);
     this.messageToast.set(COPY.REMOVE);
-  }
-
-  handleRefresh(event: CustomEvent) {
-    setTimeout(() => {
-      (event.target as HTMLIonRefresherElement).complete();
-    }, 2000);
   }
 }

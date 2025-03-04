@@ -3,9 +3,7 @@
 </app-px-ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  <app-px-ion-refresher [eventRefresh]="getPokemonList.bind(this)"></app-px-ion-refresher>
 
   <ion-searchbar animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
 
