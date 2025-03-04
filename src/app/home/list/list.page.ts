@@ -51,6 +51,7 @@ export class ListPage implements OnInit, OnDestroy {
     limit: 20,
     offset: 0
   });
+  COPY = COPY;
   messageToast = signal('');
   constructor() {
         addIcons({trash,heart,library:library});

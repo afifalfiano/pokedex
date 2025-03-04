@@ -32,6 +32,7 @@ export class FavoritePage implements OnInit, OnDestroy {
   triggerToast = signal('toast-info');
   isLoading = signal(true);
   keywordSearch = signal('');
+  COPY = COPY;
   constructor() { 
     addIcons({trash});
   }
