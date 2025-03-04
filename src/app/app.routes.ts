@@ -8,19 +8,21 @@ export const routes: Routes = [
   },
   {
     path: 'list',
-    loadComponent: () => import('./list/list.page').then((m) => m.ListPage),
-  },
-  {
-    path: 'contact',
-    loadComponent: () => import('./contact/contact.page').then( m => m.ContactPage)
+    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./home/list/list.page').then((m) => m.ListPage),
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./home/detail/detail.page').then( m => m.DetailPage),
+      },
+    ]
   },
   {
     path: 'favorite',
     loadComponent: () => import('./favorite/favorite.page').then( m => m.FavoritePage)
-  },
-  {
-    path: 'detail/:id',
-    loadComponent: () => import('./detail/detail.page').then( m => m.DetailPage)
   },
   {
     path: '**',

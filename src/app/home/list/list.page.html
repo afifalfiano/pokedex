@@ -11,18 +11,28 @@
     </ion-toolbar>
   </ion-header>
 
+  <ion-searchbar animated="true" placeholder="Search pokemon" (ionChange)="onSearch($event)"></ion-searchbar>
+
+
   <ion-list>
     @for (pokemon of data().results; track $index; let index = $index) {
     <ion-item>
       <ion-avatar slot="start">
         <img [src]="urlImage + index + Image.png" alt="avatar" />
       </ion-avatar>
-      <ion-label>{{ pokemon.name }}</ion-label>
+      <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
+      <ion-button id="toast-add" shape="round" (click)="onAddFavorite(pokemon)">
+        <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
+      </ion-button>
     </ion-item>
+
     }
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
-
+  @if (total() > 0) {
+    <ion-toast trigger="toast-add" message="Success Add to favorite pokemon" [duration]="3000"></ion-toast>
+  }
 </ion-content>
+
