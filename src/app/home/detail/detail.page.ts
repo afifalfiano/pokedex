@@ -1,7 +1,7 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonGrid, IonRow, IonCol, IonText, IonLoading, IonButton, IonIcon, IonToast } from '@ionic/angular/standalone';
+import { IonContent, IonImg, IonTitle, IonGrid, IonRow, IonCol, IonText, IonLoading, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
@@ -11,29 +11,33 @@ import { addIcons } from 'ionicons';
 import { DataService } from 'src/app/core/services/data.service';
 import { API } from 'src/app/common/internal-path';
 import { COPY } from 'src/app/common/constants';
+import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
+import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   standalone: true,
-  imports: [IonToast, IonIcon, IonButton, IonLoading, IonText, RouterLink, IonCol, IonRow, IonGrid, IonContent, IonImg, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, TitleCasePipe]
+  imports: [IonIcon, IonButton, IonLoading, IonText, RouterLink, IonCol, IonRow, IonGrid, IonContent, IonImg, IonTitle, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent]
 })
-export class DetailPage implements OnInit {
+export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dataService = inject(DataService);
-  public detail: PokemonDetail | undefined | null = null;
+  public detail = signal<PokemonDetail | undefined | null>(null);
   isAddedFavorite = signal(false);
-  isLoading = signal(false);
+  isLoading = signal(true);
   messageToast = signal('');
+  durationToast = signal(3000);
+  triggerToast = signal('toast-info');
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
   constructor() { 
       addIcons({trash,heart});
-
-      effect(() => {
-        console.log(this.dataService.get()(), 'data');
-      })
+  }
+  ngOnDestroy(): void {
+    this.detail.set(null);
+    this.isLoading.set(false);
   }
 
   ngOnInit() {
@@ -44,8 +48,7 @@ export class DetailPage implements OnInit {
     this.isLoading.update(prev => !prev);
     this.pokemonService.getPokemonDetail(this.pokemonName).subscribe({
       next: data => {
-        console.log(data);
-        this.detail = data
+        this.detail.set(data)
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading.update(prev => !prev);
@@ -53,15 +56,15 @@ export class DetailPage implements OnInit {
       complete: () => {
         setTimeout(() => {
           this.isLoading.update(prev => !prev);
-        }, 1000);
+        }, 500);
       }
     });
   }
 
     onAddFavorite(): void {
       const data: IPokemonList = {
-        name: this.detail!.name,
-        url: `${API.POKEMON}/${this.detail!.id}`,
+        name: this.detail()!.name,
+        url: `${API.POKEMON}/${this.detail()?.id}`,
         isAddedFavorite: true
       }
       this.isAddedFavorite.update(prev => !prev);
@@ -71,8 +74,8 @@ export class DetailPage implements OnInit {
 
     onRemoveFavorite(): void {
       const data: IPokemonList = {
-        name: this.detail!.name,
-        url: `${API.POKEMON}/${this.detail!.id}`,
+        name: this.detail()!.name,
+        url: `${API.POKEMON}/${this.detail()?.id}`,
         isAddedFavorite: false 
       }
       this.isAddedFavorite.update(prev => !prev);

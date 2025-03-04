@@ -1,7 +1,7 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, IonToolbar, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonToast } from '@ionic/angular/standalone';
+import { IonContent, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonLoading, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { IParams, IPokemonList, IResponse } from '../../common/models/pokemon';
 import { map, Subject, takeUntil } from 'rxjs';
@@ -12,21 +12,26 @@ import { DataService } from '../../core/services/data.service';
 import { addIcons } from 'ionicons';
 import { library, heart, trash } from 'ionicons/icons';
 import { removeDuplicate } from '../../utils';
+import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
+import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.page.html',
   styleUrls: ['./list.page.scss'],
   standalone: true,
-  imports: [IonToast, IonSearchbar, IonButton, IonSearchbar,
-    RouterLink,
-    IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonRefresherContent, IonRefresher, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
   private readonly dataService = inject(DataService);
   public urlImage = environment.imageUrl;
+  public title = signal<string>('Pokedex');
   public Image = Image;
+  durationToast = signal(3000);
+  isLoading = signal(true);
+  triggerToast = signal('toast-info');
   data = signal<IResponse>(
     {
       count: 0, 
@@ -44,11 +49,7 @@ export class ListPage implements OnInit, OnDestroy {
   messageToast = signal('');
   constructor() {
         addIcons({trash,heart,library:library});
-
-        effect(() => {
-          console.log(this.data(), 'data');
-        })
-   }
+  }
 
   ngOnInit() {
     this.getPokemonList();
@@ -60,6 +61,9 @@ export class ListPage implements OnInit, OnDestroy {
   }
 
   getPokemonList(): void {
+    if (this.total() === 0) {
+      this.isLoading.set(true);
+    }
     this.pokemonService.getPokemonList(this.params()).pipe(
       takeUntil(this.destroy$),
       map(item => {
@@ -75,6 +79,7 @@ export class ListPage implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: data => {
+        this.isLoading.set(false);
         this.data.update(prev => {
           const finalData = removeDuplicate([...prev.results, ...data.results], 'name')
           return {
@@ -85,6 +90,14 @@ export class ListPage implements OnInit, OnDestroy {
             results: finalData
           }
         });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        setTimeout(() => {
+          this.isLoading.set(false);
+        }, 500);
       }
     });
   }
@@ -147,5 +160,11 @@ export class ListPage implements OnInit, OnDestroy {
     })
     this.dataService.delete(pokemon);
     this.messageToast.set(COPY.REMOVE);
+  }
+
+  handleRefresh(event: CustomEvent) {
+    setTimeout(() => {
+      (event.target as HTMLIonRefresherElement).complete();
+    }, 2000);
   }
 }

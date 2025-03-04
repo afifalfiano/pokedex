@@ -1,30 +1,26 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Favorite</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-px-ion-header>
+  <ion-title>{{title()}}</ion-title>
+</app-px-ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">favorite</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
 
   <ion-list>
-    @for (pokemon of data(); track $index; let index = $index) {
-    <ion-item>
-      <ion-avatar slot="start">
-        <img [src]="urlImage + index + Image.png" alt="avatar" />
-      </ion-avatar>
-      <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
-      <ion-button id="toast-remove" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)">
-        <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-      </ion-button>
-    </ion-item>
+    @if (!isLoading()) {
+      @for (pokemon of data(); track $index; let index = $index) {
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="urlImage + index + Image.png" alt="avatar" />
+        </ion-avatar>
+        <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
+        <ion-button [id]="triggerToast()" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)">
+          <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+      }
     }
   </ion-list>
   @if (data().length > 0) {
-    <ion-toast trigger="toast-remove" [message]="messageToast" [duration]="3000"></ion-toast>
+    <app-px-ion-toast [trigger]="triggerToast()" [message]="messageToast()" [duration]="durationToast()"></app-px-ion-toast>
   }
 </ion-content>
