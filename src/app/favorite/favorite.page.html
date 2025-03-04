@@ -25,9 +25,6 @@
     }
   </ion-list>
   @if (data().length > 0) {
-    <ion-toast 
-    position="top"
-    positionAnchor="header"
-    trigger="toast-remove" message="Success Add to favorite pokemon" [duration]="3000"></ion-toast>
+    <ion-toast trigger="toast-remove" [message]="messageToast" [duration]="3000"></ion-toast>
   }
 </ion-content>

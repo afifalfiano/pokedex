@@ -1,16 +1,16 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonLabel, IonList, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, IonToolbar, InfiniteScrollCustomEvent, IonIcon, IonButton, IonSearchbar, IonToast } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { IParams, IPokemonList, IResponse } from '../../common/models/pokemon';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
-import { Image } from '../../common/constants';
+import { COPY, Image } from '../../common/constants';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../core/services/data.service';
 import { addIcons } from 'ionicons';
-import { library, heart } from 'ionicons/icons';
+import { library, heart, trash } from 'ionicons/icons';
 import { removeDuplicate } from '../../utils';
 
 @Component({
@@ -41,8 +41,13 @@ export class ListPage implements OnInit, OnDestroy {
     limit: 20,
     offset: 0
   });
+  messageToast = signal('');
   constructor() {
-        addIcons({heart,library:library});
+        addIcons({trash,heart,library:library});
+
+        effect(() => {
+          console.log(this.data(), 'data');
+        })
    }
 
   ngOnInit() {
@@ -57,15 +62,27 @@ export class ListPage implements OnInit, OnDestroy {
   getPokemonList(): void {
     this.pokemonService.getPokemonList(this.params()).pipe(
       takeUntil(this.destroy$),
+      map(item => {
+        return {
+          ...item,
+          results: item.results.map(item => {
+            return {
+              ...item,
+              isAddedFavorite: false
+            }
+          })
+        }
+      })
     ).subscribe({
       next: data => {
         this.data.update(prev => {
+          const finalData = removeDuplicate([...prev.results, ...data.results], 'name')
           return {
             ...prev,
             previous: data.previous,
             next: data.next,
             count: data.count,
-            results: removeDuplicate([...prev.results, ...data.results], 'name')
+            results: finalData
           }
         });
       }
@@ -103,6 +120,32 @@ export class ListPage implements OnInit, OnDestroy {
   }
 
   onAddFavorite(pokemon: IPokemonList): void {
+    this.data.update(item => {
+      const idx = item.results.findIndex(item => item.name === pokemon.name);
+      if(idx > -1) {
+        item.results[idx] = {
+          ...item.results[idx],
+          isAddedFavorite: true
+        }
+      }
+      return {...item};
+    })
     this.dataService.update(pokemon);
+    this.messageToast.set(COPY.SUCCESS);
+  }
+
+  onRemoveFavorite(pokemon: IPokemonList) {
+    this.data.update(item => {
+      const idx = item.results.findIndex(item => item.name === pokemon.name);
+      if(idx > -1) {
+        item.results[idx] = {
+          ...item.results[idx],
+          isAddedFavorite: false
+        }
+      }
+      return {...item};
+    })
+    this.dataService.delete(pokemon);
+    this.messageToast.set(COPY.REMOVE);
   }
 }

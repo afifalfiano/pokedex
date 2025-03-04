@@ -21,7 +21,10 @@
         <img [src]="urlImage + index + Image.png" alt="avatar" />
       </ion-avatar>
       <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
-      <ion-button id="toast-add" shape="round" (click)="onAddFavorite(pokemon)">
+      <ion-button id="toast-info" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" *ngIf="pokemon.isAddedFavorite">
+        <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+      </ion-button>
+      <ion-button id="toast-info" shape="round" (click)="onAddFavorite(pokemon)" *ngIf="!pokemon.isAddedFavorite">
         <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
       </ion-button>
     </ion-item>
@@ -32,7 +35,7 @@
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   @if (total() > 0) {
-    <ion-toast trigger="toast-add" message="Success Add to favorite pokemon" [duration]="3000"></ion-toast>
+    <ion-toast trigger="toast-info" message="{{messageToast}}" [duration]="3000"></ion-toast>
   }
 </ion-content>
 

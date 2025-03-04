@@ -7,6 +7,7 @@ export interface IParams {
 export interface IPokemonList {
   name: string;
   url: string;
+  isAddedFavorite?: boolean;
 }
 
 export interface IResponse {

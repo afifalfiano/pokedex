@@ -5,7 +5,7 @@
   
 </ion-header>
 
-<ion-loading [isOpen]="isLoading" message="Loading..." [duration]="3000" spinner="circles"></ion-loading>
+<ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="3000" spinner="circles"></ion-loading>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
@@ -13,7 +13,7 @@
       <ion-title size="large">{{pokemonName | titlecase}}</ion-title>
     </ion-toolbar>
   </ion-header>
-  @if (!isLoading && detail) {
+  @if (!isLoading() && detail) {
     <ion-text color="primary">
       <h1 style="text-align: center; margin-top: 12px;">{{pokemonName | titlecase}}</h1>
     </ion-text>  
@@ -52,16 +52,19 @@
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <ion-col style="text-align: center;">
-          <ion-button id="toast-add" shape="round" (click)="onAddFavorite()">
+          <ion-button id="toast-info" color="danger" shape="round" (click)="onRemoveFavorite()" *ngIf="isAddedFavorite()">
+            <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+          </ion-button>
+          <ion-button id="toast-info" shape="round" (click)="onAddFavorite()" *ngIf="!isAddedFavorite()">
             <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
-          </ion-button>      
+          </ion-button>
+          <!-- <ion-button id="toast-add" shape="round" (click)="onAddFavorite()">
+            <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
+          </ion-button>       -->
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-toast 
-    position="top"
-    positionAnchor="header"
-    trigger="toast-add" message="Success Add to favorite pokemon" [duration]="3000"></ion-toast>
+    <ion-toast trigger="toast-info" [message]="messageToast()" [duration]="3000"></ion-toast>
   }
   
 </ion-content>
