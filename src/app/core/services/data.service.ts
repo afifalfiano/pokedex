@@ -21,8 +21,8 @@ export class DataService {
     return this.data;
   }
 
-  find(payload: IPokemonList) {
-    return this.data().find((item: IPokemonList) => item?.name === payload.name);
+  find(payload: string) {
+    return this.data().find((item: IPokemonList) => item?.name === payload);
   }
 
   delete(payload: IPokemonList) {

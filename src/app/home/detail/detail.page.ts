@@ -43,6 +43,14 @@ export class DetailPage implements OnInit, OnDestroy{
 
   ngOnInit() {
     this.getPokemonDetail();
+    this.onCheckAddedFavorite();
+  }
+
+  onCheckAddedFavorite(): void {
+    const data = this.dataService.find(this.pokemonName);
+    if (data) {
+      this.isAddedFavorite.set(true);
+    }
   }
 
   getPokemonDetail(): void {
