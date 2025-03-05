@@ -104,7 +104,7 @@
           <ion-list>
             @for (item of detail()?.moves; track $index) {
               <ion-item>
-                <ion-label>{{$index + 1}}</ion-label>
+                <ion-label>{{'move' | titlecase}} {{$index + 1}}</ion-label>
                 <ion-label>{{item.move.name | titlecase}}</ion-label>
               </ion-item>
             }
