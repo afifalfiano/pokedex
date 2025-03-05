@@ -8,8 +8,9 @@
   <ion-list>
     <ion-item>
       <ion-select
+      mode="ios"
       [(ngModel)]="typeSelected" 
-      label="Type Pokemon" 
+      label="Type" 
       interface="action-sheet" 
       (ionChange)="handleChange($event)"
       placeholder="Select Type Pokemon">
@@ -20,16 +21,16 @@
     </ion-item>
   </ion-list>
 
-  <ion-searchbar animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
+  <ion-searchbar mode="ios" animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
 
-  <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
+  <ion-loading mode="ios" [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   @defer (when !isLoading) {
     @if (total() > 0) {
-    <ion-list>
+    <ion-list mode="ios">
       @for (pokemon of data().results | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
-      <ion-item>
-        <ion-avatar slot="start">
+      <ion-item >
+        <ion-avatar  slot="start">
           <img [src]="urlImage + pokemon.id + Image.png" alt="avatar" />
         </ion-avatar>
         <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
@@ -43,7 +44,7 @@
       }
     </ion-list>
 
-    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll threshold="300px" (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>

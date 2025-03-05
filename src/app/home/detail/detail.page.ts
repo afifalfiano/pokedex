@@ -1,7 +1,7 @@
 import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonImg, IonText, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
+import { IonContent, IonImg, ModalController, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { ActivatedRoute } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
@@ -16,6 +16,7 @@ import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 import { register } from 'swiper/element/bundle';
 import { getPokemonId } from 'src/app/utils';
+import { PxIonModalComponent } from 'src/app/shared/components/px-ion-modal/px-ion-modal.component';
 
 register();
 @Component({
@@ -24,7 +25,7 @@ register();
   styleUrls: ['./detail.page.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true,
-  imports: [IonItem, IonFab, IonFabButton, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonText, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonItem, IonFab, IonFabButton, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
@@ -48,6 +49,7 @@ export class DetailPage implements OnInit, OnDestroy{
   durationToast = CONFIG.duration;
   triggerToast = CONFIG.detail;
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
+  private readonly modalCtrl = inject(ModalController)
 
   constructor() { 
       addIcons({trash,heart, caretBack });
@@ -111,6 +113,21 @@ export class DetailPage implements OnInit, OnDestroy{
       this.isAddedFavorite = false;
       this.messageToast = COPY.REMOVE;
       this.dataService.delete(data);
+    }
+
+    async openModal(image: string) {
+      const modal = await this.modalCtrl.create({
+        component: PxIonModalComponent,
+        showBackdrop: true,
+        animated: true,
+        mode: 'ios',
+        componentProps: {
+          name: this.pokemonName,
+          image: image
+        }
+      });
+      modal.present();
+
     }
 
 }

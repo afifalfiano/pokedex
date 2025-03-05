@@ -1,0 +1,9 @@
+<app-px-ion-header>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>{{name | titlecase}}</ion-title>
+</app-px-ion-header>
+<ion-content class="ion-padding">
+  <img src="{{image}}" alt="{{name}}" />
+</ion-content>
