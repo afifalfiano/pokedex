@@ -137,6 +137,7 @@ export class ListPage implements OnInit, OnDestroy {
             results: finalData
           }
         });
+        console.log(data, 'data');
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

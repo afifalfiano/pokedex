@@ -1,9 +1,9 @@
 import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonImg, IonGrid, IonRow, IonCol, IonText, IonLoading, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonImg, IonTitle, IonGrid, IonRow, IonCol, IonText, IonLoading, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
 import { HttpErrorResponse } from '@angular/common/http';
 import { heart, trash } from 'ionicons/icons';
@@ -24,7 +24,7 @@ register();
   styleUrls: ['./detail.page.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true,
-  imports: [IonIcon, IonButton, IonLoading, IonText, IonCol, IonRow, IonGrid, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonIcon, IonButton, IonLoading, IonText, RouterLink, IonCol, IonRow, IonGrid, IonContent, IonImg, IonTitle, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
