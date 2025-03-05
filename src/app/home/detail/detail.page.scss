@@ -42,3 +42,9 @@ ion-img {
   display: flex;
   justify-content: center;
 }
+
+:host .container {
+  max-height: 400px;
+  overflow: auto;
+  margin-bottom: 24px;
+}

@@ -4,7 +4,7 @@
   </ion-buttons>
 </app-px-ion-header>
 
-<ion-content [fullscreen]="false">
+<ion-content [fullscreen]="true">
   <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
@@ -40,7 +40,7 @@
         <ion-label>Moves</ion-label>
       </ion-segment-button>
     </ion-segment>
-    <ion-segment-view>
+    <ion-segment-view class="container">
       <ion-segment-content id="1">
         <div class="ion-padding">
           <ion-list>

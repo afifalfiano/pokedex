@@ -2,12 +2,13 @@
   <ion-title>{{title()}}</ion-title>
 </app-px-ion-header>
 
-<ion-content [fullscreen]="false">
+<ion-content [fullscreen]="true">
   <app-px-ion-refresher [eventRefresh]="getPokemonList.bind(this)"></app-px-ion-refresher>
 
   <ion-list>
     <ion-item>
-      <ion-select 
+      <ion-select
+      [(ngModel)]="typeSelected" 
       label="Type Pokemon" 
       interface="action-sheet" 
       (ionChange)="handleChange($event)"

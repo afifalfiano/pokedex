@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle } from '@ionic/angular/standalone';
+import { IonContent, IonTitle } from '@ionic/angular/standalone';
+import { PxIonHeaderComponent } from "../shared/components/px-ion-header/px-ion-header.component";
 
 @Component({
   selector: 'app-not-found',
   templateUrl: './not-found.page.html',
   styleUrls: ['./not-found.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, CommonModule, FormsModule]
+  imports: [IonContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent]
 })
 export class NotFoundPage  {
 
