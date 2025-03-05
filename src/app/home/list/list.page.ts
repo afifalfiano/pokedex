@@ -11,12 +11,13 @@ import { RouterLink } from '@angular/router';
 import { DataService } from '../../core/services/data.service';
 import { addIcons } from 'ionicons';
 import { library, heart, trash } from 'ionicons/icons';
-import { removeDuplicate } from '../../utils';
+import { getPokemonId, removeDuplicate } from '../../utils';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { HttpErrorResponse } from '@angular/common/http';
 import { SearchPipe } from 'src/app/shared/pipes/search.pipe';
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
+import { PxIonSkeletonComponent } from "../../shared/components/px-ion-skeleton/px-ion-skeleton.component";
 
 @Component({
   selector: 'app-list',
@@ -24,7 +25,7 @@ import { PxIonRefresherComponent } from "../../shared/components/px-ion-refreshe
   styleUrls: ['./list.page.scss'],
   standalone: true,
   providers: [SearchPipe],
-  imports: [IonText, SearchPipe, IonSelect, IonSelectOption, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonText, SearchPipe, PxIonSkeletonComponent, IonSelect, IonSelectOption, IonLoading, IonSearchbar, IonButton, IonSearchbar, RouterLink, IonContent, IonIcon, IonList, IonLabel, IonItem, IonAvatar, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent, PxIonSkeletonComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
@@ -32,9 +33,9 @@ export class ListPage implements OnInit, OnDestroy {
   public urlImage = environment.imageUrl;
   public title = signal<string>('Pokedex');
   public Image = Image;
-  durationToast = signal(3000);
-  isLoading = signal(true);
-  triggerToast = signal('toast-info');
+  durationToast = 1000;
+  isLoading = true;
+  triggerToast = 'toast-info';
   keywordSearch = signal('');
   typeSelected = signal<IPokemonList>({name: '', url: ''});
   isAllType = computed(() => this.typeSelected().name === 'all');
@@ -60,7 +61,7 @@ export class ListPage implements OnInit, OnDestroy {
     offset: 0
   });
   COPY = COPY;
-  messageToast = signal('');
+  messageToast = '';
   constructor() {
         addIcons({trash,heart,library:library});
   }
@@ -72,15 +73,16 @@ export class ListPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
   getPokemonTypes(): void {
-    this.isLoading.set(true);
+    this.isLoading = true;
     this.pokemonService.getTypeOfPokemon().pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: data => {
-        this.isLoading.set(false);
+        this.isLoading = false;
         const all = {name: 'All', url: ''};
         this.types.set({
           ...data,
@@ -90,11 +92,11 @@ export class ListPage implements OnInit, OnDestroy {
         this.getPokemonList();
       },
       error: (err) => {
-        this.isLoading.set(false);
+        this.isLoading = false;
       },
       complete: () => {
         setTimeout(() => {
-          this.isLoading.set(false);
+          this.isLoading = false;
         }, 500);
       }
     })
@@ -102,7 +104,7 @@ export class ListPage implements OnInit, OnDestroy {
 
   getPokemonList(): void {
     if (this.total() === 0) {
-      this.isLoading.set(true);
+      this.isLoading = true;
     }
     this.pokemonService.getPokemonList(this.params()).pipe(
       takeUntil(this.destroy$),
@@ -112,14 +114,15 @@ export class ListPage implements OnInit, OnDestroy {
           results: item.results.map(item => {
             return {
               ...item,
-              isAddedFavorite: false
+              isAddedFavorite: !!this.dataService.find(item.name),
+              id: getPokemonId(item.url),
             }
           })
         }
       })
     ).subscribe({
       next: data => {
-        this.isLoading.set(false);
+        this.isLoading = false;
         this.data.update(prev => {
           let finalData = [];
           if (this.params().offset > 0) {
@@ -136,12 +139,12 @@ export class ListPage implements OnInit, OnDestroy {
         });
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading.set(false);
+        this.isLoading = false;
       },
       complete: () => {
         setTimeout(() => {
-          this.isLoading.set(false);
-        }, 500);
+          this.isLoading = false;
+        }, 1000);
       }
     });
   }
@@ -178,7 +181,7 @@ export class ListPage implements OnInit, OnDestroy {
       return {...item};
     })
     this.dataService.update(pokemon);
-    this.messageToast.set(COPY.SUCCESS);
+    this.messageToast = COPY.SUCCESS;
   }
 
   onRemoveFavorite(pokemon: IPokemonList) {
@@ -193,23 +196,24 @@ export class ListPage implements OnInit, OnDestroy {
       return {...item};
     })
     this.dataService.delete(pokemon);
-    this.messageToast.set(COPY.REMOVE);
+    this.messageToast = COPY.REMOVE;
   }
 
 
   getIDetailTypePokemon(): void {
     if (this.typeSelected().url.trim().length === 0) return;
-    this.isLoading.set(true);
+    this.isLoading = true;
     this.pokemonService.getDetailTypeOfPokemon(this.typeSelected().url).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: data => {
-        this.isLoading.set(false);
+        this.isLoading = false;
         const list = data.pokemon.map((item) => {
           return {
             name: item.pokemon.name,
             url: item.pokemon.url,
-            isAddedFavorite: false
+            id: getPokemonId(item.pokemon.url),
+            isAddedFavorite: !!this.dataService.find(item.pokemon.name)
           }
         });
         this.data.update(prev => {
@@ -221,12 +225,12 @@ export class ListPage implements OnInit, OnDestroy {
           }
         });
       },error: (err) => {
-        this.isLoading.set(false);
+        this.isLoading = false;
       },
       complete: () => {
         setTimeout(() => {
-          this.isLoading.set(false);
-        }, 500);
+          this.isLoading = false;
+        }, 1000);
       },
     })
   }

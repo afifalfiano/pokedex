@@ -1,60 +1,39 @@
 <app-px-ion-header>
-  <ion-title [routerLink]="['/list']">Back</ion-title>
+  <ion-text>
+    <h1 style="text-align: center; margin-top: 12px;">{{pokemonName | titlecase}}</h1>
+  </ion-text>
 </app-px-ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-loading [isOpen]="isLoading()" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
+  <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
 
-  @if (detail() && !isLoading()) {
-    <ion-text color="primary">
-      <h1 style="text-align: center; margin-top: 12px;">{{pokemonName | titlecase}}</h1>
-    </ion-text>  
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-img
-            ionImgDidLoad="true"
-            ionImgWillLoad="true" 
-            ionError="true"
-            src="{{detail()!.sprites.back_default}}"
-            alt="{{detail()!.name}}"
-          ></ion-img>
-        </ion-col>
-        <ion-col>
-          <ion-img
-            ionImgDidLoad="true"
-            ionImgWillLoad="true" 
-            ionError="true"
-            src="{{detail()!.sprites.front_default}}"
-            alt="{{detail()!.name}}"
-          ></ion-img>
-        </ion-col>
-        <ion-col>
-          <ion-img
-            ionImgDidLoad="true"
-            ionImgWillLoad="true" 
-            ionError="true"
-            src="{{detail()!.sprites.front_shiny}}"
-            alt="{{detail()!.name}}"
-          ></ion-img>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  @if (detail() && !isLoading) {
+    <swiper-container [lazy]="true" [pagination]="true" [modules]="swiperModules">
+      <swiper-slide *ngFor="let image of pokemonImage()">
+        <ion-img
+        ionImgDidLoad="true"
+        ionImgWillLoad="true" 
+        ionError="true"
+        src="{{image}}"
+        alt="{{pokemonName}}"
+      ></ion-img>
+      </swiper-slide>
+    </swiper-container>
     
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <ion-col style="text-align: center;">
-          <ion-button [id]="triggerToast()" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite()">
+          <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
             <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
           </ion-button>
-          <ion-button [id]="triggerToast()" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite()">
+          <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
             <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
           </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
-    <app-px-ion-toast [trigger]="triggerToast()" [message]="messageToast()" [duration]="durationToast()"></app-px-ion-toast>
+    <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
   }
 </ion-content>

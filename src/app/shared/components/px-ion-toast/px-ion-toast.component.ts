@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IonToast } from '@ionic/angular/standalone';
 
 @Component({
@@ -8,9 +8,9 @@ import { IonToast } from '@ionic/angular/standalone';
   imports: [IonToast]
 })
 export class PxIonToastComponent {
-  message = input.required<string>();
-  duration = input.required<number>();
-  trigger = input.required<string>();
+  @Input() message = '';
+  @Input() duration = 3000;
+  @Input() trigger = 'toast-info';
   constructor() { }
 
 }

@@ -83,7 +83,9 @@ export interface Pokemon {
 
 export interface Pokemon2 {
   name: string
-  url: string
+  url: string;
+  id?: string;
+  isAddedFavorite?: boolean;
 }
 
 export interface Sprites {
