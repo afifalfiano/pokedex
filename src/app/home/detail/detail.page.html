@@ -11,6 +11,9 @@
 
   <swiper-container 
     [lazy]="true" 
+    [autoplay]="{ delay: 2500, disableOnInteraction: false }"
+    [spaceBetween]="30"
+    [slidesPerView]="1"
     [pagination]="true" 
     [modules]="swiperModules">
       <swiper-slide *ngFor="let image of pokemonImage()">
@@ -23,19 +26,6 @@
       ></ion-img>
       </swiper-slide>
     </swiper-container>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col class="icon-favorite">
-          <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
-            <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-          </ion-button>
-          <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
-            <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
 
     <ion-segment style="margin-top: 24px;">
       <ion-segment-button value="1" content-id="1">
@@ -104,7 +94,7 @@
           <ion-list>
             @for (item of detail()?.moves; track $index) {
               <ion-item>
-                <ion-label>{{'move' | titlecase}} {{$index + 1}}</ion-label>
+                <ion-label>{{$index + 1}}</ion-label>
                 <ion-label>{{item.move.name | titlecase}}</ion-label>
               </ion-item>
             }
@@ -112,5 +102,17 @@
         </div>
       </ion-segment-content>
     </ion-segment-view>
-  <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
+    
+    <ion-fab  horizontal="end" vertical="bottom" slot="fixed">
+      <ion-fab-button [color]="isAddedFavorite ? 'danger' : 'primary'">
+        <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
+          <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+        </ion-button>
+        <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
+          <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
+        </ion-button>
+      </ion-fab-button>
+    </ion-fab>
+
+    <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
 </ion-content>
