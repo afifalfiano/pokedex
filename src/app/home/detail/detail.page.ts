@@ -1,7 +1,7 @@
 import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonImg, IonText, IonLoading, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonImg, IonText, IonLoading, IonButton, IonIcon, IonicSlides } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { ActivatedRoute } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
@@ -15,7 +15,6 @@ import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-i
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 import { register } from 'swiper/element/bundle';
-import { IonicSlides } from '@ionic/angular/standalone';
 import { getPokemonId } from 'src/app/utils';
 
 register();

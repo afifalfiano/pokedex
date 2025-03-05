@@ -9,8 +9,7 @@
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
 
-  @if (detail() && !isLoading) {
-    <swiper-container 
+  <swiper-container 
     [lazy]="true" 
     [autoplay]="{ delay: 2500, disableOnInteraction: false }"
     [spaceBetween]="30"
@@ -115,5 +114,4 @@
       </ion-fab-button>
     </ion-fab>
     <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
-  }
 </ion-content>
