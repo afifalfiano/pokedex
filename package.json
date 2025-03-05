@@ -10,8 +10,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "build:ionic": "ionic build",
-    "build:apk": "ionic capacitor copy android"
+    "build:ionic": "ionic build --prod",
+    "build:apk": "ionic capacitor copy android",
+    "build:ios": "ionic capacitor copy ios"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +29,7 @@
     "@capacitor/app": "7.0.0",
     "@capacitor/core": "7.0.1",
     "@capacitor/haptics": "7.0.0",
+    "@capacitor/ios": "7.0.1",
     "@capacitor/keyboard": "7.0.0",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.0.0",
