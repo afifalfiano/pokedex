@@ -10,7 +10,7 @@ import { heart, trash, caretBack  } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { DataService } from 'src/app/core/services/data.service';
 import { API } from 'src/app/common/internal-path';
-import { COPY } from 'src/app/common/constants';
+import { CONFIG, COPY } from 'src/app/common/constants';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
 import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
@@ -45,8 +45,8 @@ export class DetailPage implements OnInit, OnDestroy{
   isAddedFavorite = false;
   isLoading = true;
   messageToast = '';
-  durationToast = 3000;
-  triggerToast = 'toast-info';
+  durationToast = CONFIG.duration;
+  triggerToast = CONFIG.detail;
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
 
   constructor() { 

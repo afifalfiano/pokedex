@@ -1,4 +1,4 @@
-export const Image = {
+export const IMAGE = {
   png: '.png'
 }
 
@@ -7,4 +7,11 @@ export const COPY = {
   REMOVE: "Success remove pokemon from favorite list",
   NOT_FOUND_HOME: 'You don\'t have any favorite pokemon. Please add some pokemon...',
   NOT_FOUND_FAVORITE: 'You don\'t have any favorite pokemon. Please add some pokemon...',
+}
+
+export const CONFIG = {
+  duration: 1000,
+  home: 'toast-home',
+  detail: 'toast-detail',
+  favorite: 'toast-favorite'
 }
