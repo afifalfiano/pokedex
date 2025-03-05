@@ -16,6 +16,7 @@ import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 import { register } from 'swiper/element/bundle';
 import { IonicSlides } from '@ionic/angular/standalone';
+import { getPokemonId } from 'src/app/utils';
 
 register();
 @Component({
@@ -48,6 +49,7 @@ export class DetailPage implements OnInit, OnDestroy{
   durationToast = 3000;
   triggerToast = 'toast-info';
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
+
   constructor() { 
       addIcons({trash,heart});
   }
@@ -87,10 +89,12 @@ export class DetailPage implements OnInit, OnDestroy{
   }
 
     onAddFavorite(): void {
+      const url = `${API.POKEMON}/${this.detail()?.id}/`;
       const data: IPokemonList = {
         name: this.detail()!.name,
-        url: `${API.POKEMON}/${this.detail()?.id}`,
-        isAddedFavorite: true
+        url: url,
+        isAddedFavorite: true,
+        id: getPokemonId(url)
       }
       this.isAddedFavorite = true;
       this.messageToast = COPY.SUCCESS;
@@ -98,10 +102,12 @@ export class DetailPage implements OnInit, OnDestroy{
     }
 
     onRemoveFavorite(): void {
+      const url = `${API.POKEMON}/${this.detail()?.id}/`;
       const data: IPokemonList = {
         name: this.detail()!.name,
-        url: `${API.POKEMON}/${this.detail()?.id}`,
-        isAddedFavorite: false 
+        url: url,
+        isAddedFavorite: false,
+        id: getPokemonId(url) 
       }
       this.isAddedFavorite = false;
       this.messageToast = COPY.REMOVE;
