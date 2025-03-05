@@ -1,14 +1,16 @@
 <app-px-ion-header>
-  <ion-text>
-    <h1 style="text-align: center; margin-top: 12px;">{{pokemonName | titlecase}}</h1>
-  </ion-text>
+  <ion-buttons slot="start">
+    <ion-back-button defaultHref="/list" text="Previous" icon="caret-back"></ion-back-button>
+  </ion-buttons>
 </app-px-ion-header>
 
 <ion-content [fullscreen]="false">
   <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
-
+  <ion-text>
+    <h1 style="text-align: center; margin-top: 24px;">{{pokemonName | titlecase}}</h1>
+  </ion-text>
   <swiper-container 
     [lazy]="true" 
     [autoplay]="{ delay: 2500, disableOnInteraction: false }"
@@ -22,7 +24,7 @@
         ionImgWillLoad="true" 
         ionError="true"
         src="{{image}}"
-        alt="{{pokemonName}}"
+        alt="{{detail()?.name || 'pokemon'}}"
       ></ion-img>
       </swiper-slide>
     </swiper-container>

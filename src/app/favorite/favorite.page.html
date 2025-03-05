@@ -26,7 +26,7 @@
 
     @if(!isLoading && empty()) {
       <ion-text color="white">
-        <p class="ion-padding">{{COPY.NOT_FOUND_FAVORITE}}</p>
+        <p class="ion-padding" style="margin-top: 0; margin-bottom: 0;">{{COPY.NOT_FOUND_FAVORITE}}</p>
       </ion-text>
     }
     <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
