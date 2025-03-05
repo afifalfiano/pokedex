@@ -39,6 +39,7 @@ export class DetailPage implements OnInit, OnDestroy{
     }
     return data;
   })
+  pokemonType = computed(() => this.detail()?.types.map(item => item.type.name))
 
   public detail = signal<PokemonDetail | undefined | null>(null);
   isAddedFavorite = false;

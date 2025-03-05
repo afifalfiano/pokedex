@@ -10,7 +10,13 @@
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
 
   @if (detail() && !isLoading) {
-    <swiper-container [lazy]="true" [pagination]="true" [modules]="swiperModules">
+    <swiper-container 
+    [lazy]="true" 
+    [autoplay]="{ delay: 2500, disableOnInteraction: false }"
+    [spaceBetween]="30"
+    [slidesPerView]="1"
+    [pagination]="true" 
+    [modules]="swiperModules">
       <swiper-slide *ngFor="let image of pokemonImage()">
         <ion-img
         ionImgDidLoad="true"
@@ -21,19 +27,93 @@
       ></ion-img>
       </swiper-slide>
     </swiper-container>
+
+    <ion-segment style="margin-top: 24px;">
+      <ion-segment-button value="basic" content-id="basic">
+        <ion-label>Basic</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="stats" content-id="stats">
+        <ion-label>Stats</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="moves" content-id="moves">
+        <ion-label>Moves</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-segment-view>
+      <ion-segment-content id="basic">
+        <div class="ion-padding">
+          <ion-list>
+            <ion-item>
+              <ion-label>Base experience</ion-label>
+              <ion-label>{{detail()?.base_experience}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Height</ion-label>
+              <ion-label>{{detail()?.height}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Weight</ion-label>
+              <ion-label>{{detail()?.weight}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Species</ion-label>
+              <ion-label>{{detail()?.species?.name | titlecase}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Forms</ion-label>
+              <ion-label>
+                @for (item of detail()?.forms; track $index; let last = $last) {
+                  <span>{{item.name| titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
+                }
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Types</ion-label>
+              <ion-label>
+                @for (item of pokemonType(); track $index; let last = $last) {
+                  <span>{{item | titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
+                }
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+      </ion-segment-content>
+      <ion-segment-content id="stats">
+        <div class="ion-padding">
+          <ion-list>
+            @for (item of detail()?.stats; track $index) {
+              <ion-item>
+                <ion-label>{{item.stat.name | titlecase}}</ion-label>
+                <ion-label>{{item.base_stat}}</ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      </ion-segment-content>
+      <ion-segment-content id="moves">
+        <div class="ion-padding">
+          <ion-list>
+            @for (item of detail()?.moves; track $index) {
+              <ion-item>
+                <ion-label>{{$index + 1}}</ion-label>
+                <ion-label>{{item.move.name | titlecase}}</ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      </ion-segment-content>
+    </ion-segment-view>
     
-    <ion-grid>
-      <ion-row class="ion-justify-content-center">
-        <ion-col style="text-align: center;">
-          <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
-            <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-          </ion-button>
-          <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
-            <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-fab  horizontal="end" vertical="bottom" slot="fixed">
+      <ion-fab-button [color]="isAddedFavorite ? 'danger' : 'primary'">
+        <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
+          <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+        </ion-button>
+        <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
+          <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
+        </ion-button>
+      </ion-fab-button>
+    </ion-fab>
     <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
   }
 </ion-content>
