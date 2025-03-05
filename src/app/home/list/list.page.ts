@@ -125,10 +125,10 @@ export class ListPage implements OnInit, OnDestroy {
         this.isLoading = false;
         this.data.update(prev => {
           let finalData = [];
-          if (this.params().offset > 0) {
-            finalData = removeDuplicate([...prev.results, ...data.results], 'name')
+          if (this.params().offset === 0) {
+            finalData = data.results;
           }
-          finalData = data.results;
+          finalData = removeDuplicate([...prev.results, ...data.results], 'name')
           return {
             ...prev,
             previous: data.previous,
@@ -137,6 +137,7 @@ export class ListPage implements OnInit, OnDestroy {
             results: finalData
           }
         });
+
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

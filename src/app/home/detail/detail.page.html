@@ -4,7 +4,7 @@
   </ion-text>
 </app-px-ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="false">
   <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
@@ -29,18 +29,18 @@
     </swiper-container>
 
     <ion-segment style="margin-top: 24px;">
-      <ion-segment-button value="basic" content-id="basic">
+      <ion-segment-button value="1" content-id="1">
         <ion-label>Basic</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="stats" content-id="stats">
+      <ion-segment-button value="2" content-id="2">
         <ion-label>Stats</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="moves" content-id="moves">
+      <ion-segment-button value="3" content-id="3">
         <ion-label>Moves</ion-label>
       </ion-segment-button>
     </ion-segment>
     <ion-segment-view>
-      <ion-segment-content id="basic">
+      <ion-segment-content id="1">
         <div class="ion-padding">
           <ion-list>
             <ion-item>
@@ -78,7 +78,7 @@
           </ion-list>
         </div>
       </ion-segment-content>
-      <ion-segment-content id="stats">
+      <ion-segment-content id="2">
         <div class="ion-padding">
           <ion-list>
             @for (item of detail()?.stats; track $index) {
@@ -90,7 +90,7 @@
           </ion-list>
         </div>
       </ion-segment-content>
-      <ion-segment-content id="moves">
+      <ion-segment-content id="3">
         <div class="ion-padding">
           <ion-list>
             @for (item of detail()?.moves; track $index) {

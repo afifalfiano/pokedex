@@ -2,7 +2,7 @@
   <ion-title>{{title()}}</ion-title>
 </app-px-ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="false">
   <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   <app-px-ion-refresher [eventRefresh]="onPretendEvent.bind(this)"></app-px-ion-refresher>
   <ion-searchbar animated="true" placeholder="Search your favorite pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
