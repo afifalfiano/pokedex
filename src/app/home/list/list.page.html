@@ -30,7 +30,7 @@
     <ion-list mode="ios">
       @for (pokemon of data().results | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
       <ion-item >
-        <ion-avatar  slot="start">
+        <ion-avatar slot="start" [routerLink]="['/', 'list', pokemon.name]">
           <img [src]="urlImage + pokemon.id + Image.png" alt="avatar" />
         </ion-avatar>
         <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
