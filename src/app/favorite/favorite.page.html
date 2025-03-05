@@ -13,7 +13,7 @@
         @for (pokemon of data() | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
         <ion-item>
           <ion-avatar slot="start">
-            <img [src]="urlImage + pokemon.id || 1 + Image.png" alt="avatar" />
+            <img [src]="urlImage + pokemon.id + Image.png" alt="avatar" />
           </ion-avatar>
           <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
           <ion-button [id]="triggerToast" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)">
