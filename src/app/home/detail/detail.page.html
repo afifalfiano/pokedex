@@ -24,9 +24,9 @@
       </swiper-slide>
     </swiper-container>
 
-    <ion-grid style="text-align: center;">
+    <ion-grid>
       <ion-row>
-        <ion-col>
+        <ion-col class="icon-favorite">
           <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
             <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
           </ion-button>
