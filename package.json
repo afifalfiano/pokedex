@@ -12,7 +12,9 @@
     "lint": "ng lint",
     "build:ionic": "ionic build --prod",
     "build:apk": "ionic capacitor copy android",
-    "build:ios": "ionic capacitor copy ios"
+    "build:ios": "ionic capacitor copy ios",
+    "run:apk": "npx cap run android",
+    "run:ios": "npx cap run ios"
   },
   "private": true,
   "dependencies": {

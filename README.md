@@ -49,6 +49,23 @@ ionic serve
 
 Then, open your browser at `http://localhost:8100`
 
+Or to run with Ionic Capacitor Android, use:
+
+```bash
+npx cap run android 
+```
+
+Then, open your android emulator
+
+Or to run with Ionic Capacitor Android, use:
+
+```bash
+npx cap run ios 
+```
+
+Then, open your iOS emulator
+
+
 ## Building the Project
 
 To build the project for production with Angular, run:
