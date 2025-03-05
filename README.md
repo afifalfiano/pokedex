@@ -65,7 +65,6 @@ npx cap run ios
 
 Then, open your iOS emulator
 
-
 ## Building the Project
 
 To build the project for production with Angular, run:
@@ -88,6 +87,6 @@ To execute unit tests, run:
 ng test
 ```
 
-## Additional Information
+## Additional Information.
 
 I deployed this apps in this URL **https://pokedex-14d36.web.app**
