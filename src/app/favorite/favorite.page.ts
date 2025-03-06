@@ -26,7 +26,7 @@ export class FavoritePage implements OnInit, OnDestroy {
   private readonly dataService = inject(DataService);
   public title = 'Favorite';
   data = this.dataService.get();
-  empty = computed(() => this.data().length === 0);
+  total = computed(() => this.data().length);
   public urlImage = environment.imageUrl;
   public Image = IMAGE;
   messageToast = '';
