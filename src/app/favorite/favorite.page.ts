@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonTitle, IonList, IonItem, IonAvatar, IonLabel, IonButton, IonIcon, IonLoading, IonText, IonSearchbar } from '@ionic/angular/standalone';
+import { IonContent, IonTitle, SearchbarCustomEvent, IonList, IonItem, IonAvatar, IonLabel, IonButton, IonIcon, IonLoading, IonText, IonSearchbar } from '@ionic/angular/standalone';
 import { DataService } from '../core/services/data.service';
 import { environment } from 'src/environments/environment';
 import { CONFIG, COPY, IMAGE } from '../common/constants';
@@ -24,10 +24,9 @@ import { PxIonSkeletonComponent } from "../shared/components/px-ion-skeleton/px-
 })
 export class FavoritePage implements OnInit, OnDestroy {
   private readonly dataService = inject(DataService);
-  public title = signal<string>('Favorite');
+  public title = 'Favorite';
   data = this.dataService.get();
   empty = computed(() => this.data().length === 0);
-  exist = computed(() => this.data().length > 0);
   public urlImage = environment.imageUrl;
   public Image = IMAGE;
   messageToast = '';
@@ -54,9 +53,11 @@ export class FavoritePage implements OnInit, OnDestroy {
     this.messageToast = COPY.REMOVE;
   }
 
-  onSearch(event: any): void {
+  onSearch(event: SearchbarCustomEvent): void {
     const pokemon = event.detail.value;
-    this.keywordSearch.set(pokemon);
+    if (pokemon) {
+      this.keywordSearch.set(pokemon);
+    }
   }
 
   onPretendEvent(): void {

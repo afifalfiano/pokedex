@@ -1,14 +1,14 @@
 <app-px-ion-header>
-  <ion-title>{{title()}}</ion-title>
+  <ion-title>{{title}}</ion-title>
 </app-px-ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-loading mode="ios" [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   <app-px-ion-refresher [eventRefresh]="onPretendEvent.bind(this)"></app-px-ion-refresher>
-  <ion-searchbar mode="ios" animated="true" placeholder="Search your favorite pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
+  <ion-searchbar mode="ios" animated="true" placeholder="search..." (ionInput)="onSearch($event)"></ion-searchbar>
   
     @defer (when !isLoading) {
-      @if (exist()) {
+      @if (!empty()) {
       <ion-list mode="ios">
         @for (pokemon of data() | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
         <ion-item>

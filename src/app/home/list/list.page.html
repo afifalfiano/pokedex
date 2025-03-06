@@ -1,5 +1,5 @@
 <app-px-ion-header>
-  <ion-title>{{title()}}</ion-title>
+  <ion-title>{{title}}</ion-title>
 </app-px-ion-header>
 
 <ion-content [fullscreen]="true">
@@ -21,7 +21,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-searchbar mode="ios" animated="true" placeholder="Search pokemon" (ionInput)="onSearch($event)"></ion-searchbar>
+  <ion-searchbar mode="ios" animated="true" placeholder="search..." (ionInput)="onSearch($event)"></ion-searchbar>
 
   <ion-loading mode="ios" [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   

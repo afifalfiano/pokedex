@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonLabel, IonThumbnail, IonItem, IonList, IonSkeletonText } from '@ionic/angular/standalone';
 
@@ -9,10 +9,7 @@ import { IonLabel, IonThumbnail, IonItem, IonList, IonSkeletonText } from '@ioni
   styleUrls: ['./px-ion-skeleton.component.scss'],
   imports: [IonSkeletonText, IonThumbnail, IonLabel, IonList, IonItem, CommonModule, FormsModule]  
 })
-export class PxIonSkeletonComponent  implements OnInit {
+export class PxIonSkeletonComponent {
   total = Array(10).fill(null);
   constructor() { }
-
-  ngOnInit() {}
-
 }

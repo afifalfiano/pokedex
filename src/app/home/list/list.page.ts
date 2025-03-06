@@ -31,7 +31,8 @@ export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
   private readonly dataService = inject(DataService);
   public urlImage = environment.imageUrl;
-  public title = signal<string>('Pokedex');
+  private readonly searchPipe = inject(SearchPipe);
+  public title = 'Pokedex';
   public Image = IMAGE;
   durationToast = CONFIG.duration;
   isLoading = true;
@@ -39,7 +40,7 @@ export class ListPage implements OnInit, OnDestroy {
   keywordSearch = signal('');
   typeSelected = signal<IPokemonList>({name: '', url: ''});
   isAllType = computed(() => this.typeSelected().name === 'all');
-  types = signal<IResponse<any[]>>({
+  types = signal<IResponse<IPokemonList[]>>({
     count: 0, 
     next: '', 
     previous: '', 
@@ -53,7 +54,6 @@ export class ListPage implements OnInit, OnDestroy {
       results: []
     }
   )
-  private readonly searchPipe = inject(SearchPipe);
   total = computed(() => this.searchPipe.transform(this.data().results, this.keywordSearch(), 'name').length);
   destroy$ = new Subject<void>();
   params = signal<IParams>({
@@ -62,6 +62,7 @@ export class ListPage implements OnInit, OnDestroy {
   });
   COPY = COPY;
   messageToast = '';
+
   constructor() {
         addIcons({trash,heart,library:library});
   }
@@ -84,10 +85,11 @@ export class ListPage implements OnInit, OnDestroy {
       next: data => {
         this.isLoading = false;
         const all = {name: 'All', url: ''};
-        this.types.set({
+        const store = {
           ...data,
           results: [all, ...data.results]
-        });
+        }
+        this.types.set(store);
         this.typeSelected.set(all);
         this.getPokemonList();
       },
@@ -170,32 +172,27 @@ export class ListPage implements OnInit, OnDestroy {
     this.keywordSearch.set(pokemon);
   }
 
-  onAddFavorite(pokemon: IPokemonList): void {
+  private updateCurrentData(pokemon: IPokemonList, isFavorite = false): void {
     this.data.update(item => {
       const idx = item.results.findIndex((item: IPokemonList) => item.name === pokemon.name);
       if(idx > -1) {
         item.results[idx] = {
           ...item.results[idx],
-          isAddedFavorite: true
+          isAddedFavorite: isFavorite
         }
       }
       return {...item};
     })
+  }
+
+  onAddFavorite(pokemon: IPokemonList): void {
+    this.updateCurrentData(pokemon, true);
     this.dataService.update(pokemon);
     this.messageToast = COPY.SUCCESS;
   }
 
   onRemoveFavorite(pokemon: IPokemonList) {
-    this.data.update(item => {
-      const idx = item.results.findIndex((item: IPokemonList) => item.name === pokemon.name);
-      if(idx > -1) {
-        item.results[idx] = {
-          ...item.results[idx],
-          isAddedFavorite: false
-        }
-      }
-      return {...item};
-    })
+    this.updateCurrentData(pokemon, false);
     this.dataService.delete(pokemon);
     this.messageToast = COPY.REMOVE;
   }

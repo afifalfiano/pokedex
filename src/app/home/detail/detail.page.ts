@@ -31,6 +31,9 @@ export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dataService = inject(DataService);
+  private readonly modalCtrl = inject(ModalController)
+  public detail = signal<PokemonDetail | undefined | null>(null);
+
   swiperModules = [IonicSlides];
   isPlayLatest = signal(false);
   isPlayLegacy = signal(false);
@@ -46,14 +49,12 @@ export class DetailPage implements OnInit, OnDestroy{
   })
   pokemonType = computed(() => this.detail()?.types.map(item => item.type.name))
 
-  public detail = signal<PokemonDetail | undefined | null>(null);
   isAddedFavorite = false;
   isLoading = true;
   messageToast = '';
   durationToast = CONFIG.duration;
   triggerToast = CONFIG.detail;
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
-  private readonly modalCtrl = inject(ModalController)
 
   constructor() { 
       addIcons({trash,heart,  });
@@ -93,27 +94,26 @@ export class DetailPage implements OnInit, OnDestroy{
     });
   }
 
+  private doMapData(isFavorite = false): IPokemonList {
+    const url = `${API.POKEMON}/${this.detail()?.id}/`;
+    const data: IPokemonList = {
+      name: this.detail()!.name,
+      url: url,
+      isAddedFavorite: isFavorite,
+      id: getPokemonId(url)
+    }
+    return data;
+  }
+
     onAddFavorite(): void {
-      const url = `${API.POKEMON}/${this.detail()?.id}/`;
-      const data: IPokemonList = {
-        name: this.detail()!.name,
-        url: url,
-        isAddedFavorite: true,
-        id: getPokemonId(url)
-      }
+      const data = this.doMapData(true);
       this.isAddedFavorite = true;
       this.messageToast = COPY.SUCCESS;
       this.dataService.update(data);
     }
 
     onRemoveFavorite(): void {
-      const url = `${API.POKEMON}/${this.detail()?.id}/`;
-      const data: IPokemonList = {
-        name: this.detail()!.name,
-        url: url,
-        isAddedFavorite: false,
-        id: getPokemonId(url) 
-      }
+      const data = this.doMapData(false);
       this.isAddedFavorite = false;
       this.messageToast = COPY.REMOVE;
       this.dataService.delete(data);
