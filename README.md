@@ -89,4 +89,13 @@ ng test
 
 ## Additional Information.
 
-I deployed this apps in this URL **https://pokedex-14d36.web.app**
+![1741257536098](image/README/1741257536098.png)
+
+Link Figma: [Prototype Pokedex Apps](https://www.figma.com/design/jQ5vyMygSJBMaqToMsMi1D/Pokedex-Apps?node-id=8-19&t=VVIdJvqZwa2mxpfz-1)
+
+
+## Additional Information.
+
+- Web Apps: **Download file inside the foldder results-build/web-pokodex.zip** or you can access directly to **https://pokedex-14d36.web.app**
+- APK: **Download file inside the foldder results-build/apk-pokodex.zip**
+- IOS: **Download file inside the foldder results-build/ios-pokodex.zip**

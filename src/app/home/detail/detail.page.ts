@@ -32,8 +32,8 @@ export class DetailPage implements OnInit, OnDestroy{
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dataService = inject(DataService);
   private readonly modalCtrl = inject(ModalController)
-  public detail = signal<PokemonDetail | undefined | null>(null);
 
+  detail = signal<PokemonDetail | undefined | null>(null);
   swiperModules = [IonicSlides];
   isPlayLatest = signal(false);
   isPlayLegacy = signal(false);
@@ -48,7 +48,6 @@ export class DetailPage implements OnInit, OnDestroy{
     return data;
   })
   pokemonType = computed(() => this.detail()?.types.map(item => item.type.name))
-
   isAddedFavorite = false;
   isLoading = true;
   messageToast = '';
@@ -57,7 +56,7 @@ export class DetailPage implements OnInit, OnDestroy{
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
 
   constructor() { 
-      addIcons({trash,heart,  });
+      addIcons({trash,heart});
   }
   ngOnDestroy(): void {
     this.detail.set(null);

@@ -11,15 +11,13 @@
       @if (total() > 0) {
       <ion-list mode="ios">
         @for (pokemon of data() | filterSearch: keywordSearch() :'name'; track $index; let index = $index) {
-        <ion-item>
-          <ion-avatar slot="start">
-            <img [src]="urlImage + pokemon.id + Image.png" alt="avatar" />
-          </ion-avatar>
-          <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name | titlecase }}</ion-label>
-          <ion-button [id]="triggerToast" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)">
-            <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-          </ion-button>
-        </ion-item>
+          <app-px-ion-pokemon-list 
+          [urlImage]="`${urlImage}${pokemon.id}${IMAGE_FORMAT.png}`" 
+          [pokemonName]="pokemon.name" 
+          [isAddedFavorite]="pokemon.isAddedFavorite" 
+          [pokemon]="pokemon" 
+          [onRemoveFavorite]="onRemoveFavorite.bind(this)" 
+          [triggerToast]="triggerToast"></app-px-ion-pokemon-list>
         }
     </ion-list>
     }
