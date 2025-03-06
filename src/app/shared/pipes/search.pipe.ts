@@ -4,7 +4,7 @@ import { IPokemonList } from 'src/app/common/models/pokemon';
 @Pipe({
   name: 'filterSearch',
   standalone: true,
-  pure: true
+  pure: false
 })
 export class SearchPipe implements PipeTransform {
 

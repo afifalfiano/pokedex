@@ -14,7 +14,6 @@ import { IPokemonList } from 'src/app/common/models/pokemon';
 })
 export class PxIonPokemonListComponent {
   private readonly router = inject(Router);
-  
   @Input({required: true}) urlImage = '/assets/icon/default.png';
   @Input({required: true}) pokemonName = ''
   @Input({required: true}) isAddedFavorite = false;

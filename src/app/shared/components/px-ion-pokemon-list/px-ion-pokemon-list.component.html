@@ -2,7 +2,7 @@
   <ion-avatar slot="start" (click)="goNavigate()" (onKeyPress)="goNavigate()">
     <img [src]="urlImage" alt="{{pokemonName}}" />
   </ion-avatar>
-  <ion-label (click)="goNavigate()" (onKeyPress)="goNavigate()"(click)="goNavigate()" (onKeyPress)="goNavigate()">{{ pokemonName | titlecase }}</ion-label>
+  <ion-label (click)="goNavigate()" (onKeyPress)="goNavigate()">{{ pokemonName | titlecase }}</ion-label>
   <ion-button color="danger" shape="round" (click)="doRemoveFavorite()" (onKeyPress)="doRemoveFavorite()" *ngIf="isAddedFavorite">
     <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
   </ion-button>
