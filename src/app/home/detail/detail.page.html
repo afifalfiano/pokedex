@@ -1,6 +1,6 @@
 <app-px-ion-header>
   <ion-buttons mode="ios" slot="start">
-    <ion-back-button  defaultHref="/list" text="Back" icon="caret-back"></ion-back-button>
+    <ion-back-button  defaultHref="/list" text="Back"></ion-back-button>
   </ion-buttons>
   <ion-title>{{pokemonName | titlecase}}</ion-title>
 </app-px-ion-header>
@@ -39,7 +39,11 @@
       <ion-segment-button value="3" content-id="3">
         <ion-label>Moves</ion-label>
       </ion-segment-button>
+      <ion-segment-button value="4" content-id="4">
+        <ion-label>Sounds Cries</ion-label>
+      </ion-segment-button>
     </ion-segment>
+
     <ion-segment-view mode="ios" class="container">
       <ion-segment-content id="1">
           <ion-list>
@@ -97,6 +101,24 @@
             }
           </ion-list>
       </ion-segment-content>
+      <ion-segment-content id="4">
+        <ion-list>
+          <ion-item>
+            <ion-label>{{'latest' | titlecase}}</ion-label>
+            <ion-label>
+              <ion-toggle [checked]="isPlayLatest()" (ionChange)="getStatusAudio(detail()?.cries?.latest || '',isPlayLatest)" justify="end">{{statusLatest()}}</ion-toggle>
+              <audio src="{{detail()?.cries?.latest}}"></audio>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>{{'legacy' | titlecase}}</ion-label>
+            <ion-label>
+              <ion-toggle [checked]="isPlayLegacy()" (ionChange)="getStatusAudio(detail()?.cries?.legacy || '', isPlayLegacy)" justify="end">{{statusLegacy()}}</ion-toggle>
+              <audio src="{{detail()?.cries?.legacy}}"></audio>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+    </ion-segment-content>
     </ion-segment-view>
     
     <ion-fab mode="ios"  horizontal="end" vertical="bottom" slot="fixed">

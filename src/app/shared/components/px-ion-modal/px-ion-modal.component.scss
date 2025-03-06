@@ -1,5 +1,7 @@
 img {
-  width: 100%;
   height: 100%;
   overflow: hidden;
+}
+:host .ion-padding {
+  text-align: center;
 }

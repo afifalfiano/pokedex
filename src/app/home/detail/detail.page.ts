@@ -1,12 +1,12 @@
-import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed, WritableSignal } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonImg, ModalController, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
+import { IonContent, IonImg, IonToggle, ModalController, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { ActivatedRoute } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
 import { HttpErrorResponse } from '@angular/common/http';
-import { heart, trash, caretBack  } from 'ionicons/icons';
+import { heart, trash,   } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { DataService } from 'src/app/core/services/data.service';
 import { API } from 'src/app/common/internal-path';
@@ -25,13 +25,17 @@ register();
   styleUrls: ['./detail.page.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true,
-  imports: [IonItem, IonFab, IonFabButton, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonItem, IonFab, IonFabButton, IonToggle, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
 })
 export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dataService = inject(DataService);
   swiperModules = [IonicSlides];
+  isPlayLatest = signal(false);
+  isPlayLegacy = signal(false);
+  statusLatest = computed(() => this.isPlayLatest() ? "Stop" : "Play");
+  statusLegacy = computed(() => this.isPlayLegacy() ? "Stop" : "Play");
   pokemonImage = computed(() => {
     const detail = this.detail();
     let data = [];
@@ -52,7 +56,7 @@ export class DetailPage implements OnInit, OnDestroy{
   private readonly modalCtrl = inject(ModalController)
 
   constructor() { 
-      addIcons({trash,heart, caretBack });
+      addIcons({trash,heart,  });
   }
   ngOnDestroy(): void {
     this.detail.set(null);
@@ -128,6 +132,33 @@ export class DetailPage implements OnInit, OnDestroy{
       });
       modal.present();
 
+    }
+
+    getStatusAudio(audioFile: string, isPlay: WritableSignal<boolean>): void {
+      if (audioFile.trim().length === 0) return;
+      const el = new Audio(audioFile);
+      if (isPlay()) {
+        el.pause();
+        el.currentTime = 0;
+        isPlay.set(false);
+        return;
+      }
+
+      el.addEventListener('ended', () => {
+        isPlay.set(false);
+      });
+      
+      el.addEventListener('error', () => {
+        console.error('Failed to play audio:', audioFile);
+        isPlay.set(false);
+      });
+      
+      isPlay.set(true);
+      
+      el.play().catch((err) => {
+        console.error('Audio playback failed:', err);
+        isPlay.set(false);
+      });
     }
 
 }
