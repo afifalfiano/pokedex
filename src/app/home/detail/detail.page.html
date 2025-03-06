@@ -9,6 +9,7 @@
   <ion-loading [isOpen]="isLoading" message="Loading..." [duration]="1000" spinner="circles"></ion-loading>
   
   <app-px-ion-refresher [eventRefresh]="getPokemonDetail.bind(this)"></app-px-ion-refresher>
+  
   <swiper-container 
     [lazy]="true" 
     [autoplay]="{ delay: 2500, disableOnInteraction: false }"
@@ -24,110 +25,108 @@
         alt="{{detail()?.name || 'pokemon'}}"
       ></ion-img>
       </swiper-slide>
-    </swiper-container>
+  </swiper-container>
 
-    <ion-segment class="segment-button" mode="ios">
-      <ion-segment-button value="1" content-id="1">
-        <ion-label>Basic</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="2" content-id="2">
-        <ion-label>Stats</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="3" content-id="3">
-        <ion-label>Moves</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="4" content-id="4">
-        <ion-label>Sounds Cries</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+  <ion-segment class="segment-button" mode="ios">
+    <ion-segment-button value="1" content-id="1">
+      <ion-label>Basic</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="2" content-id="2">
+      <ion-label>Stats</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="3" content-id="3">
+      <ion-label>Moves</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="4" content-id="4">
+      <ion-label>Sounds Cries</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
-    <ion-segment-view mode="ios" class="container">
-      <ion-segment-content id="1">
-          <ion-list>
-            <ion-item>
-              <ion-label>Base experience</ion-label>
-              <ion-label>{{detail()?.base_experience}}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>Height</ion-label>
-              <ion-label>{{detail()?.height}}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>Weight</ion-label>
-              <ion-label>{{detail()?.weight}}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>Species</ion-label>
-              <ion-label>{{detail()?.species?.name | titlecase}}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>Forms</ion-label>
-              <ion-label>
-                @for (item of detail()?.forms; track $index; let last = $last) {
-                  <span>{{item.name| titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
-                }
-              </ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>Types</ion-label>
-              <ion-label>
-                @for (item of pokemonType(); track $index; let last = $last) {
-                  <span>{{item | titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
-                }
-              </ion-label>
-            </ion-item>
-          </ion-list>
-      </ion-segment-content>
-      <ion-segment-content id="2">
-          <ion-list>
-            @for (item of detail()?.stats; track $index) {
-              <ion-item>
-                <ion-label>{{item.stat.name | titlecase}}</ion-label>
-                <ion-label>{{item.base_stat}}</ion-label>
-              </ion-item>
-            }
-          </ion-list>
-      </ion-segment-content>
-      <ion-segment-content id="3">
-          <ion-list>
-            @for (item of detail()?.moves; track $index) {
-              <ion-item>
-                <ion-label>{{'move' | titlecase}} {{$index + 1}}</ion-label>
-                <ion-label>{{item.move.name | titlecase}}</ion-label>
-              </ion-item>
-            }
-          </ion-list>
-      </ion-segment-content>
-      <ion-segment-content id="4">
+  <ion-segment-view mode="ios" class="container">
+    <ion-segment-content id="1">
         <ion-list>
           <ion-item>
-            <ion-label>{{'latest' | titlecase}}</ion-label>
+            <ion-label>Base experience</ion-label>
+            <ion-label>{{detail()?.base_experience}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Height</ion-label>
+            <ion-label>{{detail()?.height}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Weight</ion-label>
+            <ion-label>{{detail()?.weight}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Species</ion-label>
+            <ion-label>{{detail()?.species?.name | titlecase}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Forms</ion-label>
             <ion-label>
-              <ion-toggle [checked]="isPlayLatest()" (ionChange)="getStatusAudio(detail()?.cries?.latest || '',isPlayLatest)" justify="end">{{statusLatest()}}</ion-toggle>
-              <audio src="{{detail()?.cries?.latest}}"></audio>
+              @for (item of detail()?.forms; track $index; let last = $last) {
+                <span>{{item.name| titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
+              }
             </ion-label>
           </ion-item>
           <ion-item>
-            <ion-label>{{'legacy' | titlecase}}</ion-label>
+            <ion-label>Types</ion-label>
             <ion-label>
-              <ion-toggle [checked]="isPlayLegacy()" (ionChange)="getStatusAudio(detail()?.cries?.legacy || '', isPlayLegacy)" justify="end">{{statusLegacy()}}</ion-toggle>
-              <audio src="{{detail()?.cries?.legacy}}"></audio>
+              @for (item of pokemonType(); track $index; let last = $last) {
+                <span>{{item | titlecase}}</span><ng-container *ngIf="!last">,</ng-container>
+              }
             </ion-label>
           </ion-item>
         </ion-list>
     </ion-segment-content>
-    </ion-segment-view>
-    
-    <ion-fab mode="ios"  horizontal="end" vertical="bottom" slot="fixed">
-      <ion-fab-button [color]="isAddedFavorite ? 'danger' : 'primary'">
-        <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
-          <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
-        </ion-button>
-        <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
-          <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
-        </ion-button>
-      </ion-fab-button>
-    </ion-fab>
-
-    <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
+    <ion-segment-content id="2">
+        <ion-list>
+          @for (item of detail()?.stats; track $index) {
+            <ion-item>
+              <ion-label>{{item.stat.name | titlecase}}</ion-label>
+              <ion-label>{{item.base_stat}}</ion-label>
+            </ion-item>
+          }
+        </ion-list>
+    </ion-segment-content>
+    <ion-segment-content id="3">
+        <ion-list>
+          @for (item of detail()?.moves; track $index) {
+            <ion-item>
+              <ion-label>{{'move' | titlecase}} {{$index + 1}}</ion-label>
+              <ion-label>{{item.move.name | titlecase}}</ion-label>
+            </ion-item>
+          }
+        </ion-list>
+    </ion-segment-content>
+    <ion-segment-content id="4">
+      <ion-list>
+        <ion-item>
+          <ion-label>{{'latest' | titlecase}}</ion-label>
+          <ion-label>
+            <ion-toggle [checked]="isPlayLatest()" (ionChange)="getStatusAudio(detail()?.cries?.latest || '',isPlayLatest)" justify="end">{{statusLatest()}}</ion-toggle>
+            <audio src="{{detail()?.cries?.latest}}"></audio>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'legacy' | titlecase}}</ion-label>
+          <ion-label>
+            <ion-toggle [checked]="isPlayLegacy()" (ionChange)="getStatusAudio(detail()?.cries?.legacy || '', isPlayLegacy)" justify="end">{{statusLegacy()}}</ion-toggle>
+            <audio src="{{detail()?.cries?.legacy}}"></audio>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+  </ion-segment-content>
+  </ion-segment-view>
+  
+  <ion-fab mode="ios"  horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button [color]="isAddedFavorite ? 'danger' : 'primary'">
+      <ion-button [id]="triggerToast" color="danger" shape="round" (onKeyPress)="onRemoveFavorite()"  (click)="onRemoveFavorite()" *ngIf="isAddedFavorite">
+        <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
+      </ion-button>
+      <ion-button [id]="triggerToast" shape="round" (onKeyPress)="onAddFavorite()" (click)="onAddFavorite()" *ngIf="!isAddedFavorite">
+        <ion-icon slot="icon-only" style="color: #FFF" name="heart"></ion-icon>
+      </ion-button>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

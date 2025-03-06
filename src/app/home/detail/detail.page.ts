@@ -1,7 +1,7 @@
 import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, signal, computed, WritableSignal } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonImg, IonToggle, ModalController, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
+import { IonContent, IonImg, IonToggle, ModalController, ToastController, IonButtons, IonBackButton, IonFab, IonFabButton, IonLoading, IonSegmentContent, IonSegmentView, IonButton, IonIcon, IonicSlides, IonSegment, IonLabel, IonSegmentButton, IonList, IonItem } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { ActivatedRoute } from '@angular/router';
 import { IPokemonList, PokemonDetail } from '../../common/models/pokemon';
@@ -12,7 +12,6 @@ import { DataService } from 'src/app/core/services/data.service';
 import { API } from 'src/app/common/internal-path';
 import { CONFIG, COPY } from 'src/app/common/constants';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
-import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
 import { register } from 'swiper/element/bundle';
 import { getPokemonId } from 'src/app/utils';
@@ -25,13 +24,15 @@ register();
   styleUrls: ['./detail.page.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true,
-  imports: [IonItem, IonFab, IonFabButton, IonToggle, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent]
+  imports: [IonItem, IonFab, IonFabButton, IonToggle, IonButtons, IonBackButton, IonSegmentContent, IonSegmentView, IonList, IonSegmentButton, IonLabel, IonSegment, IonIcon, IonButton, IonLoading, IonContent, IonImg, CommonModule, FormsModule, TitleCasePipe, PxIonHeaderComponent, PxIonRefresherComponent]
 })
 export class DetailPage implements OnInit, OnDestroy{
   private readonly pokemonService = inject(PokemonService)
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dataService = inject(DataService);
   private readonly modalCtrl = inject(ModalController)
+  private readonly toastController = inject(ToastController);
+
 
   detail = signal<PokemonDetail | undefined | null>(null);
   swiperModules = [IonicSlides];
@@ -53,10 +54,21 @@ export class DetailPage implements OnInit, OnDestroy{
   messageToast = '';
   durationToast = CONFIG.duration;
   triggerToast = CONFIG.detail;
+  defaultImg = CONFIG.defaultImg;
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
+  progress = 0;
 
   constructor() { 
       addIcons({trash,heart});
+      setInterval(() => {
+        this.progress += 0.01;
+  
+        if (this.progress > 1) {
+          setTimeout(() => {
+            this.progress = 0;
+          }, 1000);
+        }
+      }, 50);
   }
   ngOnDestroy(): void {
     this.detail.set(null);
@@ -109,6 +121,7 @@ export class DetailPage implements OnInit, OnDestroy{
       this.isAddedFavorite = true;
       this.messageToast = COPY.SUCCESS;
       this.dataService.update(data);
+      this.presentToast('top');
     }
 
     onRemoveFavorite(): void {
@@ -116,6 +129,7 @@ export class DetailPage implements OnInit, OnDestroy{
       this.isAddedFavorite = false;
       this.messageToast = COPY.REMOVE;
       this.dataService.delete(data);
+      this.presentToast('top');
     }
 
     async openModal(image: string) {
@@ -158,6 +172,16 @@ export class DetailPage implements OnInit, OnDestroy{
         console.error('Audio playback failed:', err);
         isPlay.set(false);
       });
+    }
+
+    async presentToast(position: 'top' | 'middle' | 'bottom') {
+      const toast = await this.toastController.create({
+        message: this.messageToast,
+        duration: this.durationToast,
+        position: position,
+      });
+  
+      await toast.present();
     }
 
 }

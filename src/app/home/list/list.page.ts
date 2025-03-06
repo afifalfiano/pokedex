@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonSearchbar, IonLoading, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonInfiniteScroll, ToastController, IonInfiniteScrollContent, IonTitle, InfiniteScrollCustomEvent, IonSearchbar, IonLoading, IonText } from '@ionic/angular/standalone';
 import { PokemonService } from '../../core/api/pokemon.service';
 import { IParams, IPokemonList, IResponse } from '../../common/models/pokemon';
 import { map, Subject, takeUntil } from 'rxjs';
@@ -12,7 +12,6 @@ import { addIcons } from 'ionicons';
 import { library, heart, trash } from 'ionicons/icons';
 import { getPokemonId, removeDuplicate } from '../../utils';
 import { PxIonHeaderComponent } from "../../shared/components/px-ion-header/px-ion-header.component";
-import { PxIonToastComponent } from "../../shared/components/px-ion-toast/px-ion-toast.component";
 import { HttpErrorResponse } from '@angular/common/http';
 import { SearchPipe } from 'src/app/shared/pipes/search.pipe';
 import { PxIonRefresherComponent } from "../../shared/components/px-ion-refresher/px-ion-refresher.component";
@@ -25,18 +24,19 @@ import { PxIonPokemonListComponent } from "../../shared/components/px-ion-pokemo
   styleUrls: ['./list.page.scss'],
   standalone: true,
   providers: [SearchPipe],
-  imports: [IonText, SearchPipe, PxIonPokemonListComponent, PxIonSkeletonComponent, IonSelect, IonSelectOption, IonLoading, IonSearchbar, IonSearchbar, IonContent, IonList, IonItem, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonToastComponent, PxIonRefresherComponent, PxIonSkeletonComponent, PxIonPokemonListComponent]
+  imports: [IonText, SearchPipe, PxIonPokemonListComponent, PxIonSkeletonComponent, IonSelect, IonSelectOption, IonLoading, IonSearchbar, IonSearchbar, IonContent, IonList, IonItem, IonInfiniteScroll, IonInfiniteScrollContent, IonTitle, CommonModule, FormsModule, PxIonHeaderComponent, PxIonRefresherComponent, PxIonSkeletonComponent, PxIonPokemonListComponent]
 })
 export class ListPage implements OnInit, OnDestroy {
   private readonly pokemonService = inject(PokemonService);
   private readonly dataService = inject(DataService);
   private readonly searchPipe = inject(SearchPipe);
+  private readonly toastController = inject(ToastController);
+
   urlImage = environment.imageUrl;
   title = 'Pokedex';
   IMAGE_FORMAT = IMAGE_FORMAT;
   durationToast = CONFIG.duration;
   isLoading = true;
-  triggerToast = CONFIG.home;
   keywordSearch = signal('');
   typeSelected = signal<IPokemonList>({name: '', url: ''});
   isAllType = computed(() => this.typeSelected().name === 'all');
@@ -189,14 +189,25 @@ export class ListPage implements OnInit, OnDestroy {
     this.updateCurrentData(pokemon, true);
     this.dataService.update(pokemon);
     this.messageToast = COPY.SUCCESS;
+    this.presentToast('top');
   }
 
   onRemoveFavorite(pokemon: IPokemonList) {
     this.updateCurrentData(pokemon, false);
     this.dataService.delete(pokemon);
     this.messageToast = COPY.REMOVE;
+    this.presentToast('top');
   }
 
+  async presentToast(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: this.messageToast,
+      duration: this.durationToast,
+      position: position,
+    });
+
+    await toast.present();
+  }
 
   getIDetailTypePokemon(): void {
     if (this.typeSelected().url.trim().length === 0) return;

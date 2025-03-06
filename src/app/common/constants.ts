@@ -15,5 +15,6 @@ export const CONFIG = {
   duration: 1000,
   home: 'toast-home',
   detail: 'toast-detail',
-  favorite: 'toast-favorite'
+  favorite: 'toast-favorite',
+  defaultImg: '/assets/icon/default.png'
 }
