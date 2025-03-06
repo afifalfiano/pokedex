@@ -14,20 +14,19 @@
           <app-px-ion-pokemon-list 
           [urlImage]="`${urlImage}${pokemon.id}${IMAGE_FORMAT.png}`" 
           [pokemonName]="pokemon.name" 
-          [isAddedFavorite]="pokemon.isAddedFavorite" 
+          [isAddedFavorite]="!pokemon.isAddedFavorite" 
           [pokemon]="pokemon" 
           [onRemoveFavorite]="onRemoveFavorite.bind(this)" 
           [triggerToast]="triggerToast"></app-px-ion-pokemon-list>
         }
     </ion-list>
     }
-
+    <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
     @if(!isLoading && total() === 0) {
       <ion-text mode="ios" color="white">
         <p class="ion-padding" style="margin-top: 0; margin-bottom: 0;">{{COPY.NOT_FOUND_FAVORITE}}</p>
       </ion-text>
     }
-    <app-px-ion-toast [trigger]="triggerToast" [message]="messageToast" [duration]="durationToast"></app-px-ion-toast>
     } @placeholder {
     <app-px-ion-skeleton></app-px-ion-skeleton>
     }
