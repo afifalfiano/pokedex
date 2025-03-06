@@ -18,11 +18,8 @@
     [modules]="swiperModules">
       <swiper-slide *ngFor="let image of pokemonImage()">
         <ion-img
-        ionImgDidLoad="true"
-        ionImgWillLoad="true"
         (click)="openModal(image)" 
-        (onKeyPress)="openModal(image)" 
-        ionError="true"
+        (onKeyPress)="openModal(image)"
         src="{{image}}"
         alt="{{detail()?.name || 'pokemon'}}"
       ></ion-img>

@@ -245,4 +245,14 @@ export class ListPage implements OnInit, OnDestroy {
     }
     this.getIDetailTypePokemon();
   }
+
+  refreshPage(): void {
+    this.params.update(prev => {
+      return {
+        offset: 0,
+        limit: 20
+      }
+    })
+    this.getPokemonTypes();
+  }
 }
