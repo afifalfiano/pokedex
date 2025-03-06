@@ -33,7 +33,7 @@
         <ion-avatar slot="start" [routerLink]="['/', 'list', pokemon.name]">
           <img [src]="urlImage + pokemon.id + Image.png" alt="avatar" />
         </ion-avatar>
-        <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name }}</ion-label>
+        <ion-label [routerLink]="['/', 'list', pokemon.name]">{{ pokemon.name | titlecase }}</ion-label>
         <ion-button [id]="triggerToast" color="danger" shape="round" (click)="onRemoveFavorite(pokemon)" (onKeyPress)="onRemoveFavorite(pokemon)" *ngIf="pokemon.isAddedFavorite">
           <ion-icon slot="icon-only" style="color: #FFF" name="trash"></ion-icon>
         </ion-button>
