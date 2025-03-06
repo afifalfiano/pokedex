@@ -187,8 +187,8 @@ export class ListPage implements OnInit, OnDestroy {
 
   onAddFavorite(pokemon: IPokemonList): void {
     this.updateCurrentData(pokemon, true);
-    this.dataService.update(pokemon);
     this.messageToast = COPY.SUCCESS;
+    this.dataService.update({...pokemon, isAddedFavorite: true});
     this.presentToast('top');
   }
 
