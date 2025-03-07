@@ -56,7 +56,6 @@ export class DetailPage implements OnInit, OnDestroy{
   triggerToast = CONFIG.detail;
   defaultImg = CONFIG.defaultImg;
   pokemonName = this.activatedRoute.snapshot.paramMap.get('id')!;
-  progress = 0;
 
   constructor() { 
       addIcons({trash,heart});
