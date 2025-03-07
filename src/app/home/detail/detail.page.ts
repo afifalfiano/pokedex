@@ -60,15 +60,6 @@ export class DetailPage implements OnInit, OnDestroy{
 
   constructor() { 
       addIcons({trash,heart});
-      setInterval(() => {
-        this.progress += 0.01;
-  
-        if (this.progress > 1) {
-          setTimeout(() => {
-            this.progress = 0;
-          }, 1000);
-        }
-      }, 50);
   }
   ngOnDestroy(): void {
     this.detail.set(null);
